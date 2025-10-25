@@ -23,14 +23,7 @@ export default function HomePage() {
               Secure, efficient, and modern vehicle logbook system powered by QR code technology. Each vehicle record is
               accessible via a unique QR code for instant verification.
             </p>
-            <div className="pt-4">
-              <Link href="/admin">
-                <Button size="lg" className="gap-2">
-                  <QrCode className="h-5 w-5" />
-                  Admin: Generate QR Code
-                </Button>
-              </Link>
-            </div>
+
           </section>
 
           <section className="grid md:grid-cols-3 gap-6">
@@ -70,18 +63,10 @@ export default function HomePage() {
               <CardTitle>How It Works</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+
               <div className="flex gap-4">
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
                   1
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">Generate QR Code</h3>
-                  <p className="text-muted-foreground">Admin creates a unique QR code for each vehicle logbook entry</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                  2
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground mb-1">Scan & Register</h3>
@@ -92,15 +77,17 @@ export default function HomePage() {
               </div>
               <div className="flex gap-4">
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                  3
+                  2
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">View Records</h3>
+                  <h3 className="font-semibold text-foreground mb-1">View/Edit Records</h3>
                   <p className="text-muted-foreground">
-                    Once registered, the QR code provides instant access to the complete vehicle record
+                    Once registered, the QR code provides instant access to the complete vehicle record<br />
+                    And also you can add service/repair records to keep track of maintenance history
                   </p>
                 </div>
               </div>
+              
             </CardContent>
           </Card>
         </div>

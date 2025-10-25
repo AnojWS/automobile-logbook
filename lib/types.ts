@@ -9,3 +9,14 @@ export interface LogbookData {
   remarks?: string
   createdAt: string
 }
+
+export interface ServiceRecord {
+  id: string
+  serviceType: string
+  description: string
+  serviceDate: string
+  cost: string
+  technician: string
+  notes?: string
+  createdAt: string
+}

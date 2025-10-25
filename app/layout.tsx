@@ -9,7 +9,7 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Automobile Logbook System",
   description: "Digital vehicle registration and logbook management",
-  generator: "v0.app",
+  generator: "cleaoo-com",
 }
 
 export default function RootLayout({

@@ -1,7 +1,13 @@
+"use client"
+
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { LogbookData } from "@/lib/types"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Car, Hash, Palette, User } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar, Car, Hash, Palette, User, Plus } from "lucide-react"
+import { ServiceRecordForm } from "./service-record-form"
+import { ServiceRecordsList } from "./service-records-list"
 
 interface LogbookDetailsProps {
   data: LogbookData
@@ -9,6 +15,8 @@ interface LogbookDetailsProps {
 }
 
 export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
+  const [showAddForm, setShowAddForm] = useState(false)
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -18,7 +26,7 @@ export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10">
       <Card className="border-2 border-primary/20">
         <CardHeader className="bg-primary/5">
           <div className="flex items-start justify-between">
@@ -109,14 +117,25 @@ export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
         </CardContent>
       </Card>
 
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground text-center">
-            This is an official vehicle logbook record. All information is stored securely and can be accessed via the
-            unique QR code.
-          </p>
-        </CardContent>
-      </Card>
+
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold text-foreground">Service Records</h2>
+          <Button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="gap-2"
+            variant={showAddForm ? "outline" : "default"}
+          >
+            <Plus className="h-4 w-4" />
+            {showAddForm ? "Cancel" : "Add Service Record"}
+          </Button>
+        </div>
+
+        {showAddForm && <ServiceRecordForm recordId={recordId} onSuccess={() => setShowAddForm(false)} />}
+
+        <ServiceRecordsList recordId={recordId} />
+      </div>
     </div>
   )
 }

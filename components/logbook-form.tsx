@@ -1,13 +1,11 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/hooks/use-toast"
 import type { LogbookData } from "@/lib/types"
 import { Spinner } from "@/components/ui/spinner"
@@ -21,17 +19,22 @@ export function LogbookForm({ recordId, onSubmit }: LogbookFormProps) {
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const [formData, setFormData] = useState({
-    vehicleNumber: "",
-    ownerName: "",
-    chassisNumber: "",
-    engineNumber: "",
+    identifierNumber: "",
+    vehicleType: "",
+    bodyType: "",
+    colour: "",
+    registrationPlateNumber: "",
+    registrationExpiry: "",
+    yearOfManufacture: "",
+    identifierType: "",
+    make: "",
     model: "",
-    color: "",
-    dateOfRegistration: "",
-    remarks: "",
+    engineNumber: "",
+    stateVehicleRegistered: "",
+    yearMonthCompliance: "",
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -41,15 +44,20 @@ export function LogbookForm({ recordId, onSubmit }: LogbookFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validation
     if (
-      !formData.vehicleNumber ||
-      !formData.ownerName ||
-      !formData.chassisNumber ||
-      !formData.engineNumber ||
+      !formData.identifierNumber ||
+      !formData.vehicleType ||
+      !formData.bodyType ||
+      !formData.colour ||
+      !formData.registrationPlateNumber ||
+      !formData.registrationExpiry ||
+      !formData.yearOfManufacture ||
+      !formData.identifierType ||
+      !formData.make ||
       !formData.model ||
-      !formData.color ||
-      !formData.dateOfRegistration
+      !formData.engineNumber ||
+      !formData.stateVehicleRegistered ||
+      !formData.yearMonthCompliance
     ) {
       toast({
         title: "Validation Error",
@@ -89,42 +97,144 @@ export function LogbookForm({ recordId, onSubmit }: LogbookFormProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="vehicleNumber">
-                Vehicle Number <span className="text-destructive">*</span>
+              <Label htmlFor="identifierNumber">
+                Identifier Number <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="vehicleNumber"
-                name="vehicleNumber"
+                id="identifierNumber"
+                name="identifierNumber"
+                placeholder="e.g., ID-12345"
+                value={formData.identifierNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+                        <div className="space-y-2">
+              <Label htmlFor="identifierType">
+                Identifier Type <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="identifierType"
+                name="identifierType"
+                placeholder="e.g., VIN, Chassis Number"
+                value={formData.identifierType}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+                        <div className="space-y-2">
+              <Label htmlFor="registrationPlateNumber">
+                Registration Plate Number <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="registrationPlateNumber"
+                name="registrationPlateNumber"
                 placeholder="e.g., ABC-1234"
-                value={formData.vehicleNumber}
+                value={formData.registrationPlateNumber}
                 onChange={handleChange}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="ownerName">
-                Owner Name <span className="text-destructive">*</span>
+              <Label htmlFor="registrationExpiry">
+                Registration Expiry <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="ownerName"
-                name="ownerName"
-                placeholder="Full name of owner"
-                value={formData.ownerName}
+                id="registrationExpiry"
+                name="registrationExpiry"
+                type="date"
+                value={formData.registrationExpiry}
                 onChange={handleChange}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="chassisNumber">
-                Chassis Number <span className="text-destructive">*</span>
+              <Label htmlFor="vehicleType">
+                Vehicle Type <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="chassisNumber"
-                name="chassisNumber"
-                placeholder="17-digit chassis number"
-                value={formData.chassisNumber}
+                id="vehicleType"
+                name="vehicleType"
+                placeholder="e.g., Car, Truck, Motorcycle"
+                value={formData.vehicleType}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="bodyType">
+                Body Type <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="bodyType"
+                name="bodyType"
+                placeholder="e.g., Sedan, SUV, Hatchback"
+                value={formData.bodyType}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="colour">
+                Colour <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="colour"
+                name="colour"
+                placeholder="Vehicle colour"
+                value={formData.colour}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+
+
+            <div className="space-y-2">
+              <Label htmlFor="yearOfManufacture">
+                Year of Manufacture <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="yearOfManufacture"
+                name="yearOfManufacture"
+                placeholder="e.g., 2024"
+                value={formData.yearOfManufacture}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+
+
+            <div className="space-y-2">
+              <Label htmlFor="make">
+                Make <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="make"
+                name="make"
+                placeholder="e.g., Toyota, Honda"
+                value={formData.make}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="model">
+                Model <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="model"
+                name="model"
+                placeholder="e.g., Camry, Civic"
+                value={formData.model}
                 onChange={handleChange}
                 required
               />
@@ -145,58 +255,32 @@ export function LogbookForm({ recordId, onSubmit }: LogbookFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="model">
-                Model / Make <span className="text-destructive">*</span>
+              <Label htmlFor="stateVehicleRegistered">
+                State Vehicle Registered <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="model"
-                name="model"
-                placeholder="e.g., Toyota Camry 2024"
-                value={formData.model}
+                id="stateVehicleRegistered"
+                name="stateVehicleRegistered"
+                placeholder="e.g., California, Texas"
+                value={formData.stateVehicleRegistered}
                 onChange={handleChange}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="color">
-                Color <span className="text-destructive">*</span>
+              <Label htmlFor="yearMonthCompliance">
+                Year/Month of Compliance <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="color"
-                name="color"
-                placeholder="Vehicle color"
-                value={formData.color}
+                id="yearMonthCompliance"
+                name="yearMonthCompliance"
+                placeholder="e.g., 2024-01"
+                value={formData.yearMonthCompliance}
                 onChange={handleChange}
                 required
               />
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="dateOfRegistration">
-                Date of Registration <span className="text-destructive">*</span>
-              </Label>
-              <Input
-                id="dateOfRegistration"
-                name="dateOfRegistration"
-                type="date"
-                value={formData.dateOfRegistration}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="remarks">Remarks (Optional)</Label>
-            <Textarea
-              id="remarks"
-              name="remarks"
-              placeholder="Additional notes or comments"
-              value={formData.remarks}
-              onChange={handleChange}
-              rows={4}
-            />
           </div>
 
           <Button type="submit" size="lg" className="w-full" disabled={loading}>

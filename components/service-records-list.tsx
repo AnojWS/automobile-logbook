@@ -16,9 +16,9 @@ interface ServiceRecordsListProps {
 }
 
 export function ServiceRecordsList({ recordId }: ServiceRecordsListProps) {
-  const [records, setRecords] = useState<ServiceRecord[]>([])
+  const [records, setRecords] = useState<(ServiceRecord & { serviceId: string })[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedRecord, setSelectedRecord] = useState<ServiceRecord | null>(null)
+  const [selectedRecord, setSelectedRecord] = useState<(ServiceRecord & { serviceId: string }) | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { toast } = useToast()
 
@@ -31,9 +31,9 @@ export function ServiceRecordsList({ recordId }: ServiceRecordsListProps) {
       setLoading(true)
       const q = query(collection(db, "records"), where("recordId", "==", recordId))
       const querySnapshot = await getDocs(q)
-      const fetchedRecords: ServiceRecord[] = []
+      const fetchedRecords: (ServiceRecord & { serviceId: string })[] = []
       querySnapshot.forEach((doc) => {
-        fetchedRecords.push({ id: doc.id, ...doc.data() } as ServiceRecord)
+        fetchedRecords.push({ serviceId: doc.id, ...doc.data() } as ServiceRecord & { serviceId: string })
       })
       // Sort by date descending (newest first)
       fetchedRecords.sort((a, b) => new Date(b.serviceDate).getTime() - new Date(a.serviceDate).getTime())
@@ -50,12 +50,12 @@ export function ServiceRecordsList({ recordId }: ServiceRecordsListProps) {
     }
   }
 
-  const handleDelete = async (recordId: string) => {
+  const handleDelete = async (serviceId: string) => {
     if (!confirm("Are you sure you want to delete this service record?")) return
 
     try {
-      await deleteDoc(doc(db, "records", recordId))
-      setRecords(records.filter((r) => r.id !== recordId))
+      await deleteDoc(doc(db, "records", serviceId))
+      setRecords(records.filter((r) => r.serviceId !== serviceId))
       toast({
         title: "Success",
         description: "Service record deleted successfully",
@@ -70,7 +70,7 @@ export function ServiceRecordsList({ recordId }: ServiceRecordsListProps) {
     }
   }
 
-  const handleViewDetails = (record: ServiceRecord) => {
+  const handleViewDetails = (record: ServiceRecord & { serviceId: string }) => {
     setSelectedRecord(record)
     setIsModalOpen(true)
   }
@@ -105,13 +105,13 @@ export function ServiceRecordsList({ recordId }: ServiceRecordsListProps) {
           <div className="space-y-3">
             {records.map((record) => (
               <div
-                key={record.id}
+                key={record.serviceId}
                 className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <div className="flex-1">
                   <p className="font-semibold text-foreground">{record.serviceType}</p>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(record.serviceDate).toLocaleDateString()} • {record.technician}
+                    {new Date(record.serviceDate).toLocaleDateString()} • {record.technicianMechanicName}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -119,7 +119,12 @@ export function ServiceRecordsList({ recordId }: ServiceRecordsListProps) {
                     <Eye className="h-4 w-4" />
                     View
                   </Button>
-                  <Button variant="destructive" size="sm" onClick={() => handleDelete(record.id)} className="gap-2">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(record.serviceId)}
+                    className="gap-2"
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>

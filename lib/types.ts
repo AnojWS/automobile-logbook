@@ -1,22 +1,30 @@
 export interface LogbookData {
-  vehicleNumber: string
-  ownerName: string
-  chassisNumber: string
-  engineNumber: string
+  identifierNumber: string
+  vehicleType: string
+  bodyType: string
+  colour: string
+  registrationPlateNumber: string
+  registrationExpiry: string
+  yearOfManufacture: string
+  identifierType: string
+  make: string
   model: string
-  color: string
-  dateOfRegistration: string
-  remarks?: string
+  engineNumber: string
+  stateVehicleRegistered: string
+  yearMonthCompliance: string
   createdAt: string
 }
 
 export interface ServiceRecord {
-  id: string
-  serviceType: string
-  description: string
+  recordId: string
   serviceDate: string
+  serviceType: string
+  serviceCenterDealerName: string
   cost: string
-  technician: string
-  notes?: string
+  odometerReading: string
+  nextServiceDue: string
+  serviceDescription: string
+  technicianMechanicName: string
+  additionalNotes?: string
   createdAt: string
 }

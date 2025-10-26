@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import type { ServiceRecord } from "@/lib/types"
 import { Button } from "@/components/ui/button"
@@ -16,27 +15,39 @@ import { db } from "@/lib/firebase"
 import { X } from "lucide-react"
 
 interface ServiceRecordModalProps {
-  record: ServiceRecord
+  record: ServiceRecord & { serviceId: string }
   recordId: string
   isOpen: boolean
   onClose: () => void
   onUpdate: () => void
 }
 
+const SERVICE_TYPES = [
+  "Initial / First Service",
+  "Minor Service",
+  "Intermediate Service",
+  "Major Service",
+  "Annual Service",
+  "Kilometer-based Service",
+]
+
 export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate }: ServiceRecordModalProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const [formData, setFormData] = useState({
-    serviceType: record.serviceType,
-    description: record.description,
     serviceDate: record.serviceDate,
+    serviceType: record.serviceType,
+    serviceCenterDealerName: record.serviceCenterDealerName,
     cost: record.cost,
-    technician: record.technician,
-    notes: record.notes || "",
+    odometerReading: record.odometerReading,
+    nextServiceDue: record.nextServiceDue,
+    serviceDescription: record.serviceDescription,
+    technicianMechanicName: record.technicianMechanicName,
+    additionalNotes: record.additionalNotes || "",
   })
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -44,7 +55,14 @@ export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate
   }
 
   const handleSave = async () => {
-    if (!formData.serviceType || !formData.description || !formData.serviceDate || !formData.technician) {
+    if (
+      !formData.serviceDate ||
+      !formData.serviceType ||
+      !formData.serviceCenterDealerName ||
+      !formData.odometerReading ||
+      !formData.serviceDescription ||
+      !formData.technicianMechanicName
+    ) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields",
@@ -55,14 +73,17 @@ export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate
 
     setLoading(true)
     try {
-      const docRef = doc(db, "records", record.id)
+      const docRef = doc(db, "records", record.serviceId)
       await updateDoc(docRef, {
-        serviceType: formData.serviceType,
-        description: formData.description,
         serviceDate: formData.serviceDate,
+        serviceType: formData.serviceType,
+        serviceCenterDealerName: formData.serviceCenterDealerName,
         cost: formData.cost,
-        technician: formData.technician,
-        notes: formData.notes,
+        odometerReading: formData.odometerReading,
+        nextServiceDue: formData.nextServiceDue,
+        serviceDescription: formData.serviceDescription,
+        technicianMechanicName: formData.technicianMechanicName,
+        additionalNotes: formData.additionalNotes,
       })
 
       toast({
@@ -101,11 +122,6 @@ export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate
             <>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="serviceType">Service Type</Label>
-                  <Input id="serviceType" name="serviceType" value={formData.serviceType} onChange={handleChange} />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="serviceDate">Service Date</Label>
                   <Input
                     id="serviceDate"
@@ -117,30 +133,89 @@ export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="technician">Technician Name</Label>
-                  <Input id="technician" name="technician" value={formData.technician} onChange={handleChange} />
+                  <Label htmlFor="serviceType">Service Type</Label>
+                  <select
+                    id="serviceType"
+                    name="serviceType"
+                    value={formData.serviceType}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border border-input rounded-md bg-background text-foreground"
+                  >
+                    <option value="">Select a service type</option>
+                    {SERVICE_TYPES.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="serviceCenterDealerName">Service Center / Dealer Name</Label>
+                  <Input
+                    id="serviceCenterDealerName"
+                    name="serviceCenterDealerName"
+                    value={formData.serviceCenterDealerName}
+                    onChange={handleChange}
+                  />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="cost">Cost</Label>
                   <Input id="cost" name="cost" value={formData.cost} onChange={handleChange} />
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="odometerReading">Odometer Reading (km)</Label>
+                  <Input
+                    id="odometerReading"
+                    name="odometerReading"
+                    value={formData.odometerReading}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="nextServiceDue">Next Service Due</Label>
+                  <Input
+                    id="nextServiceDue"
+                    name="nextServiceDue"
+                    value={formData.nextServiceDue}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="technicianMechanicName">Technician / Mechanic Name</Label>
+                  <Input
+                    id="technicianMechanicName"
+                    name="technicianMechanicName"
+                    value={formData.technicianMechanicName}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="serviceDescription">Service Description</Label>
                 <Textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
+                  id="serviceDescription"
+                  name="serviceDescription"
+                  value={formData.serviceDescription}
                   onChange={handleChange}
                   rows={4}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="notes">Additional Notes</Label>
-                <Textarea id="notes" name="notes" value={formData.notes} onChange={handleChange} rows={3} />
+                <Label htmlFor="additionalNotes">Additional Notes</Label>
+                <Textarea
+                  id="additionalNotes"
+                  name="additionalNotes"
+                  value={formData.additionalNotes}
+                  onChange={handleChange}
+                  rows={3}
+                />
               </div>
 
               <div className="flex gap-3">
@@ -163,8 +238,8 @@ export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate
             <>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-sm text-muted-foreground">Service Type</p>
-                  <p className="font-semibold text-foreground">{record.serviceType}</p>
+                  <p className="text-sm text-muted-foreground">Service ID</p>
+                  <p className="font-semibold text-foreground">{record.serviceId}</p>
                 </div>
 
                 <div>
@@ -173,25 +248,45 @@ export function ServiceRecordModal({ record, recordId, isOpen, onClose, onUpdate
                 </div>
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Technician</p>
-                  <p className="font-semibold text-foreground">{record.technician}</p>
+                  <p className="text-sm text-muted-foreground">Service Type</p>
+                  <p className="font-semibold text-foreground">{record.serviceType}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Service Center / Dealer</p>
+                  <p className="font-semibold text-foreground">{record.serviceCenterDealerName}</p>
                 </div>
 
                 <div>
                   <p className="text-sm text-muted-foreground">Cost</p>
                   <p className="font-semibold text-foreground">{record.cost || "N/A"}</p>
                 </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Odometer Reading</p>
+                  <p className="font-semibold text-foreground">{record.odometerReading} km</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Next Service Due</p>
+                  <p className="font-semibold text-foreground">{record.nextServiceDue || "N/A"}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Technician / Mechanic</p>
+                  <p className="font-semibold text-foreground">{record.technicianMechanicName}</p>
+                </div>
               </div>
 
               <div>
-                <p className="text-sm text-muted-foreground">Description</p>
-                <p className="text-foreground whitespace-pre-wrap">{record.description}</p>
+                <p className="text-sm text-muted-foreground">Service Description</p>
+                <p className="text-foreground whitespace-pre-wrap">{record.serviceDescription}</p>
               </div>
 
-              {record.notes && (
+              {record.additionalNotes && (
                 <div>
                   <p className="text-sm text-muted-foreground">Additional Notes</p>
-                  <p className="text-foreground whitespace-pre-wrap">{record.notes}</p>
+                  <p className="text-foreground whitespace-pre-wrap">{record.additionalNotes}</p>
                 </div>
               )}
 

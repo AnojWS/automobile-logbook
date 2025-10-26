@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import type { LogbookData } from "@/lib/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, Car, Hash, Palette, User, Plus } from "lucide-react"
+import { Calendar, Car, Hash, Palette, Plus } from "lucide-react"
 import { ServiceRecordForm } from "./service-record-form"
 import { ServiceRecordsList } from "./service-records-list"
 
@@ -26,7 +26,7 @@ export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <Card className="border-2 border-primary/20">
         <CardHeader className="bg-primary/5">
           <div className="flex items-start justify-between">
@@ -46,25 +46,83 @@ export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Hash className="h-4 w-4" />
-                <span className="font-medium">Vehicle Number</span>
+                <span className="font-medium">Identifier Number</span>
               </div>
-              <p className="text-lg font-semibold text-foreground">{data.vehicleNumber}</p>
+              <p className="text-lg font-semibold text-foreground">{data.identifierNumber}</p>
+            </div>
+
+                        <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Hash className="h-4 w-4" />
+                <span className="font-medium">Identifier Type</span>
+              </div>
+              <p className="text-base text-foreground">{data.identifierType}</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                <User className="h-4 w-4" />
-                <span className="font-medium">Owner Name</span>
+                <Car className="h-4 w-4" />
+                <span className="font-medium">Vehicle Type</span>
               </div>
-              <p className="text-lg font-semibold text-foreground">{data.ownerName}</p>
+              <p className="text-lg font-semibold text-foreground">{data.vehicleType}</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Car className="h-4 w-4" />
+                <span className="font-medium">Body Type</span>
+              </div>
+              <p className="text-lg font-semibold text-foreground">{data.bodyType}</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Palette className="h-4 w-4" />
+                <span className="font-medium">Colour</span>
+              </div>
+              <p className="text-lg font-semibold text-foreground">{data.colour}</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Hash className="h-4 w-4" />
-                <span className="font-medium">Chassis Number</span>
+                <span className="font-medium">Registration Plate Number</span>
               </div>
-              <p className="text-base font-mono text-foreground">{data.chassisNumber}</p>
+              <p className="text-base font-mono text-foreground">{data.registrationPlateNumber}</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Calendar className="h-4 w-4" />
+                <span className="font-medium">Registration Expiry</span>
+              </div>
+              <p className="text-base text-foreground">{formatDate(data.registrationExpiry)}</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Calendar className="h-4 w-4" />
+                <span className="font-medium">Year of Manufacture</span>
+              </div>
+              <p className="text-base text-foreground">{data.yearOfManufacture}</p>
+            </div>
+
+
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Car className="h-4 w-4" />
+                <span className="font-medium">Make</span>
+              </div>
+              <p className="text-lg font-semibold text-foreground">{data.make}</p>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                <Car className="h-4 w-4" />
+                <span className="font-medium">Model</span>
+              </div>
+              <p className="text-lg font-semibold text-foreground">{data.model}</p>
             </div>
 
             <div className="space-y-1">
@@ -77,26 +135,18 @@ export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                <Car className="h-4 w-4" />
-                <span className="font-medium">Model / Make</span>
+                <Hash className="h-4 w-4" />
+                <span className="font-medium">State Vehicle Registered</span>
               </div>
-              <p className="text-lg font-semibold text-foreground">{data.model}</p>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                <Palette className="h-4 w-4" />
-                <span className="font-medium">Color</span>
-              </div>
-              <p className="text-lg font-semibold text-foreground">{data.color}</p>
+              <p className="text-base text-foreground">{data.stateVehicleRegistered}</p>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
                 <Calendar className="h-4 w-4" />
-                <span className="font-medium">Date of Registration</span>
+                <span className="font-medium">Year/Month of Compliance</span>
               </div>
-              <p className="text-base text-foreground">{formatDate(data.dateOfRegistration)}</p>
+              <p className="text-base text-foreground">{data.yearMonthCompliance}</p>
             </div>
 
             <div className="space-y-1">
@@ -107,17 +157,17 @@ export function LogbookDetails({ data, recordId }: LogbookDetailsProps) {
               <p className="text-base text-foreground">{formatDate(data.createdAt)}</p>
             </div>
           </div>
-
-          {data.remarks && (
-            <div className="mt-6 pt-6 border-t border-border space-y-2">
-              <p className="text-sm font-medium text-muted-foreground">Remarks</p>
-              <p className="text-base text-foreground leading-relaxed">{data.remarks}</p>
-            </div>
-          )}
         </CardContent>
       </Card>
 
-
+      <Card className="bg-muted/50">
+        <CardContent className="pt-6">
+          <p className="text-sm text-muted-foreground text-center">
+            This is an official vehicle logbook record. All information is stored securely and can be accessed via the
+            unique QR code.
+          </p>
+        </CardContent>
+      </Card>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
